@@ -63,6 +63,7 @@
     }
   },
   "projects": {
-    "snake": "packages/snake/project.json"
+    "snake": "packages/snake/project.json",
+    "example": "apps/example/project.json"
   }
 }
