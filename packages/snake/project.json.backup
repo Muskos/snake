@@ -1,0 +1,21 @@
+{
+  "name": "snake",
+  "root": ".",
+  "sourceRoot": "src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "configFile": "snake/vite.config.ts"
+      }
+    },
+    "build:watch": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "configFile": "snake/vite.config.ts",
+        "watch": true
+      }
+    }
+  }
+} 

@@ -1,0 +1,21 @@
+{
+  "name": "snake",
+  "root": "snake",
+  "sourceRoot": "snake/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "snake/dist"
+      }
+    },
+    "build:watch": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "snake/dist",
+        "watch": true
+      }
+    }
+  }
+} 

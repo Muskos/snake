@@ -1,0 +1,21 @@
+{
+  "name": "example",
+  "root": "example",
+  "sourceRoot": "example/src",
+  "projectType": "application",
+  "targets": {
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "options": {
+        "outputPath": "example/dist",
+        "buildTarget": "example:build"
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "options": {
+        "outputPath": "example/dist"
+      }
+    }
+  }
+} 

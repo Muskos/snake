@@ -1,0 +1,13 @@
+{
+  "name": "@snake/example",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm:dev:snake\" \"npm:dev:example\"",
+    "dev:snake": "cd ../snake && npx vite build --watch --emptyOutDir=false",
+    "dev:example": "vite"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  }
+}
