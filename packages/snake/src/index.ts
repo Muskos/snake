@@ -6,12 +6,25 @@ export function createSnakeGame(container: HTMLElement, options?: {
   width?: number;
   height?: number;
   cellSize?: number;
+  pointsPerFood?: number;
+  pointsPerSpecialFood?: number;
+  speedBonusMultiplier?: number;
+  specialFoodChance?: number;
 }) {
   const width = options?.width || 20;
   const height = options?.height || 20;
   const cellSize = options?.cellSize || 20;
 
-  const game = new SnakeGame(width, height);
+  const game = new SnakeGame(
+    width,
+    height,
+    {
+      pointsPerFood: options?.pointsPerFood,
+      pointsPerSpecialFood: options?.pointsPerSpecialFood,
+      speedBonusMultiplier: options?.speedBonusMultiplier,
+      specialFoodChance: options?.specialFoodChance,
+    }
+  );
 
   const view = new SnakeView(container, cellSize);
   const engine = new GameEngine(

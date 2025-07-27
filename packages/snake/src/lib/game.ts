@@ -4,10 +4,19 @@ import {
   GameState, 
   Position, 
   Direction, 
-  SpeedChangeCallback 
+  SpeedChangeCallback,
+  Food,
+  ScoreOptions,
 } from '../types';
+import { ScoreManager } from './score';
+import { DEFAULT_SNAKE, DEFAULT_SPECIAL_FOOD_CHANCE, DEFAULT_BASE_SPEED, DEFAULT_MAX_SPEED } from './constants';
 
-const DEFAULT_SNAKE: Position[] = [{ x: 10, y: 10 }];
+export interface SnakeGameOptions extends ScoreOptions {
+  specialFoodChance?: number;
+  baseSpeed?: number;
+  speedIncrement?: number;
+  maxSpeed?: number;
+}
 
 export class SnakeGame {
   private width: number;
@@ -15,17 +24,28 @@ export class SnakeGame {
   public onSpeedChange: SpeedChangeCallback | null;
   private defaultSnake: Position[];
   private state!: GameState;
+  private scoreManager: ScoreManager;
+  private specialFoodChance: number;
+  private baseSpeed: number;
+  private maxSpeed: number;
+  private currentSpeed: number;
 
-  constructor(width = 20, height = 20, onSpeedChange: SpeedChangeCallback | null = null) {
+  constructor(
+    width = 20,
+    height = 20,
+    options: SnakeGameOptions = {},
+    onSpeedChange: SpeedChangeCallback | null = null
+  ) {
     this.width = width;
     this.height = height;
+    this.scoreManager = new ScoreManager(options);
+    this.specialFoodChance = options.specialFoodChance ?? DEFAULT_SPECIAL_FOOD_CHANCE;
     this.onSpeedChange = onSpeedChange;
     this.defaultSnake = DEFAULT_SNAKE;
-    // this.defaultSnake = snakeMocks[0].map(part => ({ ...part }));
-    // this.defaultSnake = snakeMocks[1].map(part => ({ ...part }));
-    // this.defaultSnake = snakeMocks[2].map(part => ({ ...part }));
-    // this.defaultSnake = snakeMocks[3].map(part => ({ ...part }));
     this.defaultSnake = snakeMocks[5].map(part => ({ ...part }));
+    this.baseSpeed = options.baseSpeed ?? DEFAULT_BASE_SPEED;
+    this.maxSpeed = options.maxSpeed ?? DEFAULT_MAX_SPEED;
+    this.currentSpeed = this.baseSpeed;
     this.reset();
   }
 
@@ -41,6 +61,7 @@ export class SnakeGame {
       gameOver: false,
       speedLevel: 0
     };
+    this.currentSpeed = this.baseSpeed;
     if (this.onSpeedChange) {
       this.onSpeedChange(AppSettings.initialInterval);
     }
@@ -113,7 +134,7 @@ export class SnakeGame {
     const head = this.state.snake[0];
     const food = this.state.food;
     if (head.x === food.x && head.y === food.y) {
-      this.state.score += 1;
+      this.state.score = this.scoreManager.getScore();
       this.state.food = this.generateFood();
       if (this.state.score % 5 === 0 && this.onSpeedChange) {
         this.state.speedLevel += 1;
@@ -126,7 +147,7 @@ export class SnakeGame {
     console.log(`Score: ${this.state.score}, Speed Level: ${this.state.speedLevel}`);
   }
 
-  private generateFood(snake: Position[] = this.state.snake): Position {
+  private generateFood(snake: Position[] = this.state.snake): Food {
     const occupied = new Set(snake.map(part => `${part.x},${part.y}`));
     const freeCells: Position[] = [];
     for (let x = 0; x < this.width; x++) {
@@ -137,10 +158,11 @@ export class SnakeGame {
       }
     }
     if (freeCells.length === 0) {
-      return { x: -1, y: -1 };
+      return { x: -1, y: -1, isSpecial: false };
     }
     const idx = Math.floor(Math.random() * freeCells.length);
-    return freeCells[idx];
+    const isSpecial = Math.random() < this.specialFoodChance;
+    return { ...freeCells[idx], isSpecial };
   }
 
   increaseSpeed(): void {
@@ -149,5 +171,40 @@ export class SnakeGame {
 
   getState(): GameState {
     return this.state;
+  }
+
+  // --- API methods ---
+  getScore(): number {
+    return this.scoreManager.getScore();
+  }
+  resetScore(): void {
+    this.scoreManager.resetScore();
+    this.state.score = 0;
+  }
+  addPoints(points: number): void {
+    this.scoreManager.addPoints(points);
+    this.state.score = this.scoreManager.getScore();
+  }
+  getGlobalScore(): number {
+    return this.scoreManager.getGlobalScore();
+  }
+  setGlobalScore(score: number): void {
+    this.scoreManager.setGlobalScore(score);
+  }
+
+  getSpeed(): number {
+    return this.currentSpeed;
+  }
+
+  setSpeed(speed: number): void {
+    this.currentSpeed = Math.min(speed, this.maxSpeed);
+  }
+
+  resetSpeed(): void {
+    this.currentSpeed = this.baseSpeed;
+  }
+
+  applySpeedModifier(modifier: number): void {
+    this.setSpeed(this.currentSpeed * modifier);
   }
 }

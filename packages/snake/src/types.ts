@@ -5,10 +5,14 @@ export interface Position {
   y: number;
 }
 
+export interface Food extends Position {
+  isSpecial?: boolean;
+}
+
 export interface GameState {
   snake: Position[];
   direction: Direction;
-  food: Position;
+  food: Food;
   score: number;
   gameOver: boolean;
   speedLevel: number;
@@ -38,4 +42,17 @@ export type SnakeMock = Position[];
 
 export interface AppSettingsType {
   initialInterval: number;
-} 
+}
+
+export interface ScoreOptions {
+  pointsPerFood?: number;
+  pointsPerSpecialFood?: number;
+  speedBonusMultiplier?: number;
+}
+
+export interface SnakeGameOptions extends ScoreOptions {
+  specialFoodChance?: number;
+  baseSpeed?: number;
+  speedIncrement?: number;
+  maxSpeed?: number;
+}

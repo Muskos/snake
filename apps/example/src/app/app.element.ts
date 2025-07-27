@@ -30,11 +30,11 @@ export class AppElement extends HTMLElement {
     // Создаем игру в контейнере
     const gameContainer = this.querySelector('#snake-game') as HTMLElement;
     if (gameContainer) {
-      createSnakeGame(gameContainer, {
-        width: 20,
-        height: 20,
-        cellSize: 20
-      });
+      createSnakeGame(document.getElementById('game-container')!, {
+        pointsPerFood: 15,
+        pointsPerSpecialFood: 30,
+        speedBonusMultiplier: 1.5,
+      }); 
     }
   }
 }

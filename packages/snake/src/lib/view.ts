@@ -1,4 +1,4 @@
-import { GameState, ControlCallback, Position, Direction } from '../types';
+import { GameState, ControlCallback, Position, Direction, Food } from '../types';
 
 export class SnakeView {
   private cellSize: number;
@@ -63,6 +63,7 @@ export class SnakeView {
     this.drawBorder();
     this.drawSnake(state.snake);
     this.drawFood(state.food);
+    this.drawScore(state.score);
     if (state.gameOver) {
       this.drawGameOver();
     }
@@ -90,13 +91,24 @@ export class SnakeView {
     });
   }
 
-  private drawFood(food: Position): void {
-    this.ctx.fillStyle = 'red';
+  private drawFood(food: Food): void {
+    const isSpecial = food.isSpecial ?? false;
+    this.ctx.fillStyle = isSpecial ? 'blue' : 'red';
     this.ctx.fillRect(
       food.x * this.cellSize,
       food.y * this.cellSize,
       this.cellSize,
       this.cellSize
+    );
+  }
+
+  private drawScore(score: number): void {
+    this.ctx.fillStyle = 'black';
+    this.ctx.font = '18px sans-serif';
+    this.ctx.fillText(
+      `Score: ${score}`,
+      10,
+      24
     );
   }
 
