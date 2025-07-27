@@ -1,4 +1,4 @@
-import { GameState, ControlCallback, Position } from '../types';
+import { GameState, ControlCallback, Position, Direction } from '../types';
 
 export class SnakeView {
   private cellSize: number;
@@ -6,14 +6,19 @@ export class SnakeView {
   private ctx: CanvasRenderingContext2D;
   private controls: HTMLDivElement;
 
-  constructor(container: HTMLElement = document.body, cellSize: number = 20) {
+  constructor(container: HTMLElement = document.body, cellSize = 20) {
     this.cellSize = cellSize;
     this.canvas = document.createElement('canvas');
     this.canvas.width = 400;
     this.canvas.height = 400;
     this.canvas.id = 'snake-canvas';
     container.appendChild(this.canvas);
-    this.ctx = this.canvas.getContext('2d')!;
+
+    const ctx = this.canvas.getContext('2d');
+    if (!ctx) {
+      throw new Error('Could not get 2D context for canvas');
+    }
+    this.ctx = ctx;
 
     this.controls = document.createElement('div');
     this.controls.className = 'snake-controls';
@@ -33,12 +38,12 @@ export class SnakeView {
       const target = e.target as HTMLElement;
       if (target.tagName === 'BUTTON') {
         const dir = target.getAttribute('data-dir');
-        if (dir) callback(dir as any);
+        if (dir) callback(dir as Direction);
       }
     });
 
     window.addEventListener('keydown', (e: KeyboardEvent) => {
-      const keyMap: Record<string, string> = {
+      const keyMap: Record<string, Direction> = {
         ArrowUp: 'up',
         ArrowDown: 'down',
         ArrowLeft: 'left',
@@ -49,7 +54,7 @@ export class SnakeView {
         d: 'right'
       };
       const dir = keyMap[e.key];
-      if (dir) callback(dir as any);
+      if (dir) callback(dir);
     });
   }
 

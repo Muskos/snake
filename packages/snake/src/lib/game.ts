@@ -16,7 +16,7 @@ export class SnakeGame {
   private defaultSnake: Position[];
   private state!: GameState;
 
-  constructor(width: number = 20, height: number = 20, onSpeedChange: SpeedChangeCallback | null = null) {
+  constructor(width = 20, height = 20, onSpeedChange: SpeedChangeCallback | null = null) {
     this.width = width;
     this.height = height;
     this.onSpeedChange = onSpeedChange;
@@ -60,7 +60,7 @@ export class SnakeGame {
 
   private moveSnakeForward(): void {
     const head = this.state.snake[0];
-    let newHead: Position = { ...head };
+    const newHead: Position = { ...head };
     const dx = this.state.direction === 'right' ? 1 : this.state.direction === 'left' ? -1 : 0;
     const dy = this.state.direction === 'down' ? 1 : this.state.direction === 'up' ? -1 : 0;
 
